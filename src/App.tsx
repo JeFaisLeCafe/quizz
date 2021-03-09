@@ -1,6 +1,48 @@
 import React, { useState } from "react";
+import Loader from "react-loader-spinner";
+import styled from "styled-components";
 import { Difficulty, fetchQuizzQuestions, QuestionFormatted } from "./api";
+import { MyButton } from "./components/myButton";
 import QuestionCard from "./components/questionCard.tsx";
+import { Title, MyText } from "./components/text";
+import { COLORS } from "./constants";
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 100vh;
+  align-items: center;
+  background-color: ${COLORS.BACKGROUND};
+  justify-content: center;
+  display: flex;
+`;
+const Content = styled.div`
+  width: 80vw;
+  height: 80vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
+`;
+const AnswerBox = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const ScoreBarre = styled.div`
+  display: flex;
+  flex: 1;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 150px;
+  box-sizing: border-box;
+`;
 
 const TOTAL_QUESTIONS = 10;
 
@@ -33,9 +75,9 @@ const App = () => {
     setLoading(false);
   };
 
-  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const checkAnswer = (answer: string) => {
     if (!gameOver) {
-      const userAnswer = e.currentTarget.value;
+      const userAnswer = answer;
       const answerIsCorrect = questions[number].correct_answer === userAnswer;
 
       if (answerIsCorrect) {
@@ -61,33 +103,49 @@ const App = () => {
   };
 
   return loading ? (
-    <p>Loading Questions...</p>
+    <Container>
+      <Content>
+        <Loader type="Grid" color={COLORS.PRIMARY} height={250} width={250} />
+      </Content>
+    </Container>
   ) : (
-    <div>
-      <h1>Quizz</h1>
-      {(gameOver || userAnswers.length === TOTAL_QUESTIONS) && (
-        <button onClick={startQuizz}>start</button>
-      )}
-      {!gameOver && (
-        <p>
-          Score: {score}/{userAnswers.length}
-        </p>
-      )}
-      {questions.length > 0 && (
-        <QuestionCard
-          questionNumber={number + 1}
-          totalQuestions={TOTAL_QUESTIONS}
-          question={questions[number].question}
-          answers={questions[number].answers}
-          userAnswer={userAnswers ? userAnswers[number] : undefined}
-          callback={checkAnswer}
-        />
-      )}
+    <Container>
+      <Content>
+        <Title>Quizz</Title>
+        {(gameOver || userAnswers.length === TOTAL_QUESTIONS) && (
+          <MyButton onClick={startQuizz}>
+            <MyText>Start</MyText>
+          </MyButton>
+        )}
+        {questions.length > 0 && (
+          <ScoreBarre>
+            <MyText>
+              Score: {score}/{userAnswers.length}
+            </MyText>
+            <MyText>Timer: </MyText>
+          </ScoreBarre>
+        )}
 
-      {!gameOver && number + 1 < TOTAL_QUESTIONS && (
-        <button onClick={nextQuestion}>Next Question</button>
-      )}
-    </div>
+        <AnswerBox>
+          {questions.length > 0 && (
+            <QuestionCard
+              questionNumber={number + 1}
+              totalQuestions={TOTAL_QUESTIONS}
+              question={questions[number].question}
+              answers={questions[number].answers}
+              userAnswer={userAnswers ? userAnswers[number] : undefined}
+              callback={checkAnswer}
+            />
+          )}
+        </AnswerBox>
+
+        {!gameOver && number + 1 < TOTAL_QUESTIONS && (
+          <MyButton onClick={nextQuestion}>
+            <MyText>Next Question</MyText>
+          </MyButton>
+        )}
+      </Content>
+    </Container>
   );
 };
 
