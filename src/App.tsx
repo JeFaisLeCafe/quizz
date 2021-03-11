@@ -63,7 +63,6 @@ const App = () => {
 
   const startQuizz = async () => {
     setLoading(true);
-    resetTimer();
     setGameOver(false);
     const newQuestions = await fetchQuizzQuestions(
       TOTAL_QUESTIONS,
