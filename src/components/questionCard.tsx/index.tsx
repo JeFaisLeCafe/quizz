@@ -43,7 +43,7 @@ const QuestionCard: React.FC<QuestionProps> = ({
     <MyText>
       Question: {questionNumber}/{totalQuestions}
     </MyText>
-    <MyText>{question}</MyText>
+    <MyText>{atob(question)}</MyText>
     <div>
       {answers.map((answer) => (
         <div key={answer}>
@@ -52,7 +52,7 @@ const QuestionCard: React.FC<QuestionProps> = ({
             isWrong={userAnswer?.userAnswer === answer && !userAnswer?.correct}
             disabled={!!userAnswer}
             onClick={() => callback(answer)}>
-            <MyTextSecondary>{answer}</MyTextSecondary>
+            <MyTextSecondary>{atob(answer)}</MyTextSecondary>
           </AnswerProposition>
         </div>
       ))}

@@ -1,3 +1,4 @@
+import moment, { Moment } from "moment";
 import React, { useState } from "react";
 import Loader from "react-loader-spinner";
 import styled from "styled-components";
@@ -63,6 +64,7 @@ const App = () => {
 
   const startQuizz = async () => {
     setLoading(true);
+    resetTimer();
     setGameOver(false);
     const newQuestions = await fetchQuizzQuestions(
       TOTAL_QUESTIONS,
@@ -114,7 +116,7 @@ const App = () => {
         <Title>Quizz</Title>
         {(gameOver || userAnswers.length === TOTAL_QUESTIONS) && (
           <MyButton onClick={startQuizz}>
-            <MyText>Start</MyText>
+            <MyText>{userAnswers.length > 0 ? "Restart" : "Start"}</MyText>
           </MyButton>
         )}
         {questions.length > 0 && (
@@ -122,7 +124,6 @@ const App = () => {
             <MyText>
               Score: {score}/{userAnswers.length}
             </MyText>
-            <MyText>Timer: </MyText>
           </ScoreBarre>
         )}
 
@@ -139,11 +140,13 @@ const App = () => {
           )}
         </AnswerBox>
 
-        {!gameOver && number + 1 < TOTAL_QUESTIONS && (
-          <MyButton onClick={nextQuestion}>
-            <MyText>Next Question</MyText>
-          </MyButton>
-        )}
+        {!gameOver &&
+          number + 1 === userAnswers.length &&
+          number + 1 < TOTAL_QUESTIONS && (
+            <MyButton onClick={nextQuestion}>
+              <MyText>Next Question</MyText>
+            </MyButton>
+          )}
       </Content>
     </Container>
   );
